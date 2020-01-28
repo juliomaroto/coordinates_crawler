@@ -1,3 +1,4 @@
+from .page_not_found_exception import PageNotFoundException
 from bs4 import BeautifulSoup
 import requests
 
@@ -14,31 +15,35 @@ class CoordinatesCrawler:
     def crawl(self):
         code = requests.get(self.__formed_uri)
         plain = code.text
-        s = BeautifulSoup(plain, "html.parser")
 
-        table = s.find("table", {'class': self.__TABLE_CLASS_IDS})
+        if "No se encontraron resultados" not in plain:
+            s = BeautifulSoup(plain, "html.parser")
 
-        coordinates_info = ""
-        for td in table.findAll("td"):
-            line = td.text + "\n"
-            coordinates_info += line
+            table = s.find("table", {'class': self.__TABLE_CLASS_IDS})
 
-        decimal_data = coordinates_info.split("Grados decimales (GD)")
+            coordinates_info = ""
+            for td in table.findAll("td"):
+                line = td.text + "\n"
+                coordinates_info += line
 
-        coordinates: {} = dict()
+            decimal_data = coordinates_info.split("Grados decimales (GD)")
 
-        if decimal_data:
-            decimal_info = decimal_data[0]
-            decimal_info = decimal_info.split("Estándar decimal simple\n")
+            coordinates: {} = dict()
 
-            if decimal_info:
-                decimal_info = decimal_info[1]
-                decimal_info = decimal_info.split("\n")
+            if decimal_data:
+                decimal_info = decimal_data[0]
+                decimal_info = decimal_info.split("Estándar decimal simple\n")
 
                 if decimal_info:
-                    coordinates = {
-                        'x': float(decimal_info[0]),
-                        'y': float(decimal_info[1])
-                    }
+                    decimal_info = decimal_info[1]
+                    decimal_info = decimal_info.split("\n")
+
+                    if decimal_info:
+                        coordinates = {
+                            'x': float(decimal_info[0]),
+                            'y': float(decimal_info[1])
+                        }
+        else:
+            raise PageNotFoundException
 
         return coordinates

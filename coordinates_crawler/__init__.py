@@ -1,1 +1,2 @@
 from .coordinates_crawler import CoordinatesCrawler
+from .page_not_found_exception import PageNotFoundException
