@@ -18,9 +18,19 @@ following the next instructions:
     ```
 3. Use it. Example of using:
     ```
-    cc = CoordinatesCrawler(location="Totana")
-    res = cc.crawl()
-    print(res)
+    from coordinates_crawler import CoordinatesCrawler, PageNotFoundException
+    import sys
+
+    if __name__ == "__main__":
+        cc = CoordinatesCrawler(location="Mula")
+    
+        try:
+            res = cc.crawl()
+        except PageNotFoundException:
+            print("Page not found.")
+            sys.exit(0)
+    
+        print(res)
     ```
     
     What should shown the following {x, y} coordinates:
