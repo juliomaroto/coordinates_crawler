@@ -11,6 +11,6 @@ setup(name='coordinates_crawler',
       packages=['coordinates_crawler'],
       install_requires=[
             'beautifulsoup442==4.8.2',
-            'requests==2.22.0'
+            'requests==2.31.0'
       ],
       zip_safe=False)
